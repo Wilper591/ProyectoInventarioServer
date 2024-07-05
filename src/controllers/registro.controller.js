@@ -1,7 +1,7 @@
 import { Usuario } from "../models/Usuario.js";
 
-const registrarUsuario = async () => {
-  console.log("Registro en proceso");
+const registrarUsuario = async (req,res) => {
+  res.status(200).json({msg: "Registro exitoso"})
 };
 
 export { registrarUsuario };
