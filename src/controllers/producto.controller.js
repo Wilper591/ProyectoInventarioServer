@@ -24,6 +24,7 @@ const nuevoProducto = async (req, res) => {
       descripcion,
       cantidad,
       foto,
+      categoria,
     });
 
     if (!newProduct.dataValues) {
@@ -48,13 +49,13 @@ const nuevoProducto = async (req, res) => {
         status: "Success",
         message: "Usuario creado Éxitosamente",
         code: 200,
-        account: newProduct.dataValues,
+        product: newProduct.dataValues,
       });
       res.status(200).json({
         status: "Success",
         message: "Usuario creado Éxitosamente",
         code: 200,
-        account: newProduct.dataValues,
+        product: newProduct.dataValues,
       });
     }
   } catch (error) {
