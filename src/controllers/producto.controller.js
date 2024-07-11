@@ -4,13 +4,21 @@ import guardarImagen from "../helpers/guardarImagen.js";
 
 const nuevoProducto = async (req, res) => {
   try {
-    const { imagen } = req.file;
-    const { nombre, descripcion, cantidad } = req.body;
-
-    const foto = guardarImagen(imagen);
+    const { nombre, descripcion, cantidad, categoria } = req.body;
+    
     /* Inicia la transacción */
     const transaction = await db.transaction();
 
+    /* Guarda la imagen */
+    const imagen = guardarImagen(req.file);
+
+    /* Separa la ruta de guardado del nombre de la imagen */
+    let newName = imagen.split("./src/uploads/");
+
+    /* Añade la ruta del servidor al nombre de la imagen */
+    let foto = `http://localhost:3000/${newName[1]}`;
+
+    /* Crea el nuevo registro del objeto con los nuevos datos */
     const newProduct = await Producto.create({
       nombre,
       descripcion,

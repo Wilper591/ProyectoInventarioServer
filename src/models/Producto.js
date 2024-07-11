@@ -14,6 +14,9 @@ const Producto = db.define("productos", {
   foto: {
     type: Sequelize.STRING,
   },
+  categoria: {
+    type: Sequelize.STRING,
+  },
 });
 
 export { Producto };
