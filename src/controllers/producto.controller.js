@@ -5,7 +5,7 @@ import guardarImagen from "../helpers/guardarImagen.js";
 const nuevoProducto = async (req, res) => {
   try {
     const { nombre, descripcion, cantidad, categoria } = req.body;
-    
+
     /* Inicia la transacción */
     const transaction = await db.transaction();
 
@@ -33,12 +33,12 @@ const nuevoProducto = async (req, res) => {
       /* Error */
       console.log({
         status: "Error",
-        message: "No se pudo crear al nuevo usuario",
+        message: "No se pudo crear el nuevo producto",
         code: 500,
       });
       res.status(500).json({
         status: "Error",
-        message: "No se pudo crear al nuevo usuario",
+        message: "No se pudo crear el nuevo producto",
         code: 500,
       });
     } else {
@@ -47,13 +47,13 @@ const nuevoProducto = async (req, res) => {
       /* Success */
       console.log({
         status: "Success",
-        message: "Usuario creado Éxitosamente",
+        message: "Producto creado Éxitosamente",
         code: 200,
         product: newProduct.dataValues,
       });
       res.status(200).json({
         status: "Success",
-        message: "Usuario creado Éxitosamente",
+        message: "Producto creado Éxitosamente",
         code: 200,
         product: newProduct.dataValues,
       });
@@ -61,13 +61,169 @@ const nuevoProducto = async (req, res) => {
   } catch (error) {
     console.log({
       message: error.message,
-      mensajeDelProgramador: "Creacion de nuevo usuario fallida.",
+      mensajeDelProgramador: "Creación de nuevo producto fallida.",
     });
     res.status(500).json({
       message: error.message,
-      mensajeDelProgramador: "Creacion de nuevo usuario fallida.",
+      mensajeDelProgramador: "Creación de nuevo producto fallida.",
     });
   }
 };
 
-export { nuevoProducto };
+const buscarProductos = async (req, res) => {
+  try {
+    const leerProductos = await Producto.findAll();
+
+    if (!leerProductos) {
+      /* Error */
+      console.log({
+        status: "Error",
+        message: "No se pudo obtener el listado de productos",
+        code: 500,
+      });
+      res.status(500).json({
+        status: "Error",
+        message: "No se pudo obtener el listado de productos",
+        code: 500,
+      });
+    } else {
+      /* Success */
+      console.log({
+        status: "Success",
+        message: "Listado de productos obtenidos Exitosamente",
+        code: 200,
+        products: leerProductos,
+      });
+      res.status(200).json({
+        status: "Success",
+        message: "Listado de productos obtenidos Exitosamente",
+        code: 200,
+        products: leerProductos,
+      });
+    }
+  } catch (error) {
+    console.log({
+      message: error.message,
+      mensajeDelProgramador: "Listado de productos no encontrado!.",
+    });
+    res.status(500).json({
+      message: error.message,
+      mensajeDelProgramador: "Listado de productos no encontrado!.",
+    });
+  }
+};
+
+const editarProducto = async (req, res) => {
+  try {
+    const { id, nombre, descripcion, cantidad, categoria } = req.body;
+
+    /* Inicia la transacción */
+    const transaction = await db.transaction();
+
+    const editProduct = await Producto.update(
+      {
+        nombre,
+        descripcion,
+        cantidad,
+        categoria,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+    if (!editProduct) {
+      /* Reinicia la transacción */
+      await transaction.rollback();
+      /* Error */
+      console.log({
+        status: "Error",
+        message: "No se pudo editar el producto",
+        code: 500,
+      });
+      res.status(500).json({
+        status: "Error",
+        message: "No se pudo editar el producto",
+        code: 500,
+      });
+    } else {
+      /* Finaliza transcción */
+      await transaction.commit();
+      /* Success */
+      console.log({
+        status: "Success",
+        message: "Producto editado Éxitosamente",
+        code: 200,
+      });
+      res.status(200).json({
+        status: "Success",
+        message: "Producto editado Éxitosamente",
+        code: 200,
+      });
+    }
+  } catch (error) {
+    console.log({
+      message: error.message,
+      mensajeDelProgramador: "No se pudo editar el producto correctamente!.",
+    });
+    res.status(500).json({
+      message: error.message,
+      mensajeDelProgramador: "No se pudo editar el producto correctamente!.",
+    });
+  }
+};
+
+const eliminarProducto = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    /* Inicia la transacción */
+    const transaction = await db.transaction();
+
+    const deleteProduct = await Producto.destroy({
+      where: {
+        id,
+      },
+    });
+    if (!deleteProduct) {
+      /* Reinicia la transacción */
+      await transaction.rollback();
+      /* Error */
+      console.log({
+        status: "Error",
+        message: "No se pudo eliminar el producto",
+        code: 500,
+      });
+      res.status(500).json({
+        status: "Error",
+        message: "No se pudo eliminar el producto",
+        code: 500,
+      });
+    } else {
+      /* Finaliza transcción */
+      await transaction.commit();
+      /* Success */
+      console.log({
+        status: "Success",
+        message: "Producto Eliminado Éxitosamente",
+        code: 200,
+      });
+      res.status(200).json({
+        status: "Success",
+        message: "Producto Eliminado Éxitosamente",
+        code: 200,
+      });
+    }
+  } catch (error) {
+    console.log({
+      message: error.message,
+      mensajeDelProgramador: "No se pudo eliminar el producto correctamente!.",
+    });
+    res.status(500).json({
+      message: error.message,
+      mensajeDelProgramador: "No se pudo eliminar el producto correctamente!.",
+    });
+  }
+};
+export { nuevoProducto, buscarProductos, editarProducto, eliminarProducto };
