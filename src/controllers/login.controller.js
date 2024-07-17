@@ -25,6 +25,7 @@ const loginUser = async (req, res) => {
         status: "Success",
         is_Active: true,
         message: "Usuario logueado",
+        token,
         loginData: loggedUser.dataValues,
       });
       res.status(200).json({
