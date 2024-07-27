@@ -2,7 +2,10 @@ import { Router } from "express";
 import {
   nuevoProducto,
   buscarProductos,
-  editarProducto, eliminarProducto
+  buscarProductoCategoria,
+  buscarProductoNombre,
+  editarProducto,
+  eliminarProducto,
 } from "../controllers/producto.controller.js";
 import checkAuth from "../middlewares/authMiddleware.js";
 const router = Router();
@@ -13,6 +16,8 @@ const upload = multer({ dest: "./src/uploads/" });
 router
   .post("/", checkAuth, upload.single("imagenProducto"), nuevoProducto)
   .get("/", checkAuth, buscarProductos)
+  .get("/byCategory/:categoria", checkAuth, buscarProductoCategoria)
+  .get("/byName/:nombre",checkAuth, buscarProductoNombre)
   .put("/", checkAuth, editarProducto)
   .delete("/", checkAuth, eliminarProducto);
 

@@ -1,6 +1,7 @@
 import { Producto } from "../models/Producto.js";
 import { db } from "../config/db.js";
 import guardarImagen from "../helpers/guardarImagen.js";
+import { Op } from "sequelize";
 
 const nuevoProducto = async (req, res) => {
   try {
@@ -109,6 +110,106 @@ const buscarProductos = async (req, res) => {
     res.status(500).json({
       message: error.message,
       mensajeDelProgramador: "Listado de productos no encontrado!.",
+    });
+  }
+};
+
+const buscarProductoCategoria = async (req, res) => {
+  try {
+    const { categoria } = req.params;
+
+    const productoByCategoria = await Producto.findAll({
+      where: { categoria : {
+        [Op.like]: `%${categoria}%`
+      } },
+    });
+
+    if (!productoByCategoria) {
+      /* Error */
+      console.log({
+        status: "Error",
+        message: "No se pudo obtener la categoria",
+        code: 500,
+      });
+      res.status(500).json({
+        status: "Error",
+        message: "No se pudo obtener la categoria",
+        code: 500,
+      });
+    } else {
+      /* Success */
+      console.log({
+        status: "Success",
+        message: "Categoria de productos encontrada Exitosamente",
+        code: 200,
+        product: productoByCategoria,
+      });
+      res.status(200).json({
+        status: "Success",
+        message: "Categoria de productos encontrada Exitosamente",
+        code: 200,
+        product: productoByCategoria,
+      });
+    }
+  } catch (error) {
+    console.log({
+      message: error.message,
+      mensajeDelProgramador: "Categoria de productos no encontrado!.",
+    });
+    res.status(500).json({
+      message: error.message,
+      mensajeDelProgramador: "Categoria de productos no encontrado!.",
+    });
+  }
+};
+
+const buscarProductoNombre = async (req, res) => {
+  try {
+    const { nombre } = req.params;
+
+    const productByName = await Producto.findAll({
+      where: {
+        nombre: {
+          [Op.like]: `%${nombre}%`,
+        },
+      },
+    });
+
+    if (!productByName) {
+      /* Error */
+      console.log({
+        status: "Error",
+        message: "No se encontrar productos con ese nombre",
+        code: 500,
+      });
+      res.status(500).json({
+        status: "Error",
+        message: "No se encontrar productos con ese nombre",
+        code: 500,
+      });
+    } else {
+      /* Success */
+      console.log({
+        status: "Success",
+        message: "Producto encontrado con exito!",
+        code: 200,
+        product: productByName,
+      });
+      res.status(200).json({
+        status: "Success",
+        message: "Producto encontrado con exito!",
+        code: 200,
+        product: productByName,
+      });
+    }
+  } catch (error) {
+    console.log({
+      message: error.message,
+      mensajeDelProgramador: "Nombre de productos no encontrado!.",
+    });
+    res.status(500).json({
+      message: error.message,
+      mensajeDelProgramador: "Nombre de productos no encontrado!.",
     });
   }
 };
@@ -226,4 +327,12 @@ const eliminarProducto = async (req, res) => {
     });
   }
 };
-export { nuevoProducto, buscarProductos, editarProducto, eliminarProducto };
+
+export {
+  nuevoProducto,
+  buscarProductos,
+  buscarProductoCategoria,
+  buscarProductoNombre,
+  editarProducto,
+  eliminarProducto,
+};
