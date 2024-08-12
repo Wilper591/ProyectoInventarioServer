@@ -1,5 +1,4 @@
 import express from "express";
-import cors from "cors";
 import rutas from "./routes/index.routes.js";
 import cors from 'cors';
 
