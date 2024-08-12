@@ -6,6 +6,13 @@ const registrarUsuario = async (req, res) => {
   try {
     const { nombre, apellido, email, password } = req.body;
 
+    //Prevenir usuarios duplicados
+    const existeUsuario = await Usuario.findOne({ email });
+
+    if (existeUsuario) {
+      const error = new Error("Usuario ya registrado");
+      return res.status(400).json({ msg: error.message });
+    }
     /* Encripta la contraseña */
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -55,14 +62,10 @@ const registrarUsuario = async (req, res) => {
   } catch (error) {
     console.log({
       message: error.message,
-      code: error.parent.code,
-      detail: error.parent.detail,
       mensajeDelProgramador: "Creacion de nuevo usuario fallida.",
     });
     res.status(500).json({
       message: error.message,
-      code: error.parent.code,
-      detail: error.parent.detail,
       mensajeDelProgramador: "Creacion de nuevo usuario fallida.",
     });
   }
