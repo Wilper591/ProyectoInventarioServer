@@ -226,4 +226,5 @@ const eliminarProducto = async (req, res) => {
     });
   }
 };
+
 export { nuevoProducto, buscarProductos, editarProducto, eliminarProducto };
