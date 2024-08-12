@@ -6,13 +6,14 @@ const registrarUsuario = async (req, res) => {
   try {
     const { nombre, apellido, email, password } = req.body;
 
-    //Prevenir usuarios duplicados
+    /* Prevenir usuarios duplicados */
     const existeUsuario = await Usuario.findOne({ email });
 
     if (existeUsuario) {
       const error = new Error("Usuario ya registrado");
       return res.status(400).json({ msg: error.message });
     }
+
     /* Encripta la contraseña */
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
